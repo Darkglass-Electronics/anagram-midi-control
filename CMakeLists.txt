@@ -38,7 +38,6 @@ add_compile_definitions(
 
 dpf_add_plugin(anagram-midi-control
   TARGETS au clap jack lv2 vst2
-  UI_TYPE gles2
   FILES_DSP
       src/AnagramControlPlugin.cpp
   FILES_UI

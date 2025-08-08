@@ -7,7 +7,7 @@ The tool is open-source because nothing here is proprietary or hidden knowledge,
 Behind the scenes it uses [DPF](https://github.com/DISTRHO/DPF/) and [ImGui](https://github.com/ocornut/imgui/) through [DPF-Widgets](https://github.com/DISTRHO/DPF-Widgets/).  
 It can both be run as standalone (which will send MIDI to all available ports) or as a plugin contained in a host.
 
-Building requires CMake and UI uses OpenGLES2 for rendering.  
+Building requires CMake and UI uses OpenGL for rendering.  
 There are no other dependencies, though do note DPF is used as a git submodule, so building requires cloning the repository recursively.
 
 ![Screenshot](Screenshot.png "Screenshot")
