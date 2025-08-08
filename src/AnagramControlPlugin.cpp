@@ -264,7 +264,6 @@ protected:
                 case kActionMode:
                     outEvent.data[1] = 85;
                     outEvent.data[2] = std::clamp<uint8_t>(actions[i] - '1', 0, 2);
-                    writeMidiEvent(outEvent);
                     break;
                 case kActionTuner:
                     outEvent.data[1] = 86;

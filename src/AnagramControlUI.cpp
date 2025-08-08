@@ -6,7 +6,8 @@
 
 #include "DistrhoUI.hpp"
 #include "DistrhoStandaloneUtils.hpp"
-#include "ResizeHandle.hpp"
+
+#include <algorithm>
 
 START_NAMESPACE_DISTRHO
 
@@ -15,7 +16,6 @@ START_NAMESPACE_DISTRHO
 class AnagramControlUI : public UI
 {
     int params[kParamCount] = {};
-    ResizeHandle fResizeHandle { this };
 
     // ----------------------------------------------------------------------------------------------------------------
 
@@ -36,10 +36,6 @@ public:
         // set minimum size constraint
         const double scaleFactor = getScaleFactor();
         setGeometryConstraints(DISTRHO_UI_DEFAULT_WIDTH * scaleFactor, DISTRHO_UI_DEFAULT_HEIGHT * scaleFactor, false);
-
-        // hide resize handle if UI is resizable
-        if (isResizable())
-            fResizeHandle.hide();
 
         // always enable MIDI support (special permissions needed on some cases)
         if (isUsingNativeAudio() && supportsMIDI() && !isMIDIEnabled())

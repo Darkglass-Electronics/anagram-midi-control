@@ -54,7 +54,6 @@ set_target_properties(anagram-midi-control
 
 target_include_directories(anagram-midi-control
   PUBLIC
-    DPF-Widgets/generic
     DPF-Widgets/opengl
     src
 )
