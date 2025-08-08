@@ -52,3 +52,4 @@ jobs:
       - uses: distrho/dpf-cmake-action@v1
         with:
           target: pluginval
+          dpf_path: ./DPF
