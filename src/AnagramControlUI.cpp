@@ -15,7 +15,27 @@ START_NAMESPACE_DISTRHO
 
 class AnagramControlUI : public UI
 {
+    static constexpr const char* const kBankNames[] = {
+        " 1", " 2", " 3", " 4", " 5", " 6", " 7", " 8", " 9", "10", "11", "12", "13", "14",
+        "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28",
+        "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42",
+    };
+    static_assert(ARRAY_SIZE(kBankNames) == 42, "wrong number of banks");
+    static constexpr const char* const kPresetNames[] = {
+        "  1", "  2", "  3", "  4", "  5", "  6", "  7", "  8", "  9", " 10", " 11", " 12", " 13", " 14",
+        " 15", " 16", " 17", " 18", " 19", " 20", " 21", " 22", " 23", " 24", " 25", " 26", " 27", " 28",
+        " 29", " 30", " 31", " 32", " 33", " 34", " 35", " 36", " 37", " 38", " 39", " 40", " 41", " 42",
+        " 43", " 44", " 45", " 46", " 47", " 48", " 49", " 50", " 51", " 52", " 53", " 54", " 55", " 56",
+        " 57", " 58", " 59", " 60", " 61", " 62", " 63", " 64", " 65", " 66", " 67", " 68", " 69", " 70",
+        " 71", " 72", " 73", " 74", " 75", " 76", " 77", " 78", " 79", " 80", " 81", " 82", " 83", " 84",
+        " 85", " 86", " 87", " 88", " 89", " 90", " 91", " 92", " 93", " 94", " 95", " 96", " 97", " 98",
+        " 99", "100", "101", "102", "103", "104", "105", "106", "107", "108", "109", "110", "111", "112",
+        "113", "114", "115", "116", "117", "118", "119", "120", "121", "122", "123", "124", "125", "126",
+    };
+    static_assert(ARRAY_SIZE(kPresetNames) == 126, "wrong number of presets");
     int params[kParamCount] = {};
+    int bank = 0;
+    int preset = 0;
 
     // ----------------------------------------------------------------------------------------------------------------
 
@@ -66,18 +86,23 @@ protected:
     */
     void onImGuiDisplay() override
     {
-        const float width = getWidth();
-        const float height = getHeight();
-        const float margin = 0;
-
-        ImGui::SetNextWindowPos(ImVec2(margin, margin));
-        ImGui::SetNextWindowSize(ImVec2(width - 2 * margin, height - 2 * margin));
+        const double scaleFactor = getScaleFactor();
+        ImGui::SetNextWindowPos(ImVec2(0, 0));
+        ImGui::SetNextWindowSize(ImVec2(getWidth(), getHeight()));
 
         if (ImGui::Begin("Anagram MIDI Control", nullptr, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoDecoration))
         {
             String name;
 
             ImGui::SeparatorText("Bank Preloading");
+            ImGui::SetNextItemWidth(64 * scaleFactor);
+            ImGui::Combo("##bank", &bank, kBankNames, ARRAY_SIZE(kBankNames));
+            ImGui::SameLine();
+            if (ImGui::Button("Go##bank"))
+                setState("bank", String(bank + 1));
+            ImGui::SameLine();
+            ImGui::SeparatorEx(ImGuiSeparatorFlags_Vertical);
+            ImGui::SameLine();
             if (ImGui::Button("Previous##bank"))
                 setState("bank", "-");
             ImGui::SameLine();
@@ -85,6 +110,14 @@ protected:
                 setState("bank", "+");
 
             ImGui::SeparatorText("Presets");
+            ImGui::SetNextItemWidth(64 * scaleFactor);
+            ImGui::Combo("##preset", &preset, kPresetNames, ARRAY_SIZE(kPresetNames));
+            ImGui::SameLine();
+            if (ImGui::Button("Go##preset"))
+                setState("preset", String(preset + 1));
+            ImGui::SameLine();
+            ImGui::SeparatorEx(ImGuiSeparatorFlags_Vertical);
+            ImGui::SameLine();
             if (ImGui::Button("Previous##preset"))
                 setState("preset", "-");
             ImGui::SameLine();

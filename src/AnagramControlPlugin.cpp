@@ -160,12 +160,30 @@ protected:
     {
         /**/ if (std::strcmp(key, "bank") == 0)
         {
-            actions[kActionBank] = value[0];
+            switch (value[0])
+            {
+            case '-':
+            case '+':
+                actions[kActionBank] = value[0];
+                break;
+            default:
+                actions[kActionBank] = std::atoi(value);
+                break;
+            }
             updatedActions[kActionBank] = true;
         }
         else if (std::strcmp(key, "preset") == 0)
         {
-            actions[kActionPreset] = value[0];
+            switch (value[0])
+            {
+            case '-':
+            case '+':
+                actions[kActionPreset] = value[0];
+                break;
+            default:
+                actions[kActionPreset] = std::atoi(value);
+                break;
+            }
             updatedActions[kActionPreset] = true;
         }
         else if (std::strcmp(key, "scene") == 0)
@@ -205,84 +223,92 @@ protected:
     {
         MidiEvent outEvent;
         outEvent.frame = 0;
-        outEvent.size = 3;
-        outEvent.data[0] = 0xB0;
 
         // actions
         for (int i = 0; i < kActionCount; ++i)
         {
-            if (updatedActions[i])
-            {
-                updatedActions[i] = false;
+            if (! updatedActions[i])
+                continue;
 
-                switch (static_cast<Actions>(i))
+            updatedActions[i] = false;
+            outEvent.size = 3;
+            outEvent.data[0] = 0xB0;
+
+            switch (static_cast<Actions>(i))
+            {
+            case kActionBank:
+                switch (actions[i])
                 {
-                case kActionBank:
-                    switch (actions[i])
-                    {
-                    case '+':
-                        outEvent.data[1] = 103;
-                        outEvent.data[2] = 0;
-                        break;
-                    case '-':
-                        outEvent.data[1] = 104;
-                        outEvent.data[2] = 0;
-                        break;
-                    default:
-                        continue;
-                    }
+                default:
+                    outEvent.data[1] = 102;
+                    outEvent.data[2] = actions[i];
                     break;
-                case kActionPreset:
-                    switch (actions[i])
-                    {
-                    case '+':
-                        outEvent.data[1] = 105;
-                        outEvent.data[2] = 0;
-                        break;
-                    case '-':
-                        outEvent.data[1] = 106;
-                        outEvent.data[2] = 0;
-                        break;
-                    default:
-                        continue;
-                    }
+                case '+':
+                    outEvent.data[1] = 103;
+                    outEvent.data[2] = 0;
                     break;
-                case kActionScene:
-                    switch (actions[i])
-                    {
-                    case '0' ... '3':
-                        outEvent.data[1] = 107;
-                        outEvent.data[2] = std::clamp<uint8_t>(actions[i] - '0', 0, 3);
-                        break;
-                    case '+':
-                        outEvent.data[1] = 108;
-                        outEvent.data[2] = 0;
-                        break;
-                    case '-':
-                        outEvent.data[1] = 109;
-                        outEvent.data[2] = 0;
-                        break;
-                    default:
-                        continue;
-                    }
+                case '-':
+                    outEvent.data[1] = 104;
+                    outEvent.data[2] = 0;
                     break;
-                case kActionMode:
-                    outEvent.data[1] = 85;
-                    outEvent.data[2] = std::clamp<uint8_t>(actions[i] - '1', 0, 2);
+                }
+                break;
+            case kActionPreset:
+                switch (actions[i])
+                {
+                default:
+                    outEvent.size = 2;
+                    outEvent.data[0] = 0xC0;
+                    outEvent.data[1] = actions[i];
                     break;
-                case kActionTuner:
-                    outEvent.data[1] = 86;
+                case '+':
+                    outEvent.data[1] = 105;
+                    outEvent.data[2] = 0;
+                    break;
+                case '-':
+                    outEvent.data[1] = 106;
+                    outEvent.data[2] = 0;
+                    break;
+                }
+                break;
+            case kActionScene:
+                switch (actions[i])
+                {
+                case '0' ... '3':
+                    outEvent.data[1] = 107;
+                    outEvent.data[2] = std::clamp<uint8_t>(actions[i] - '0', 0, 3);
+                    break;
+                case '+':
+                    outEvent.data[1] = 108;
+                    outEvent.data[2] = 0;
+                    break;
+                case '-':
+                    outEvent.data[1] = 109;
                     outEvent.data[2] = 0;
                     break;
                 default:
                     continue;
                 }
-
-                writeMidiEvent(outEvent);
+                break;
+            case kActionMode:
+                outEvent.data[1] = 85;
+                outEvent.data[2] = std::clamp<uint8_t>(actions[i] - '1', 0, 2);
+                break;
+            case kActionTuner:
+                outEvent.data[1] = 86;
+                outEvent.data[2] = 0;
+                break;
+            default:
+                continue;
             }
+
+            writeMidiEvent(outEvent);
         }
 
         // bindings
+        outEvent.size = 3;
+        outEvent.data[0] = 0xB0;
+
         for (int i = 0; i < kParamCount; ++i)
         {
             if (updatedParams[i])
