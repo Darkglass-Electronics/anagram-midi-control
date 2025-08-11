@@ -40,7 +40,7 @@ public:
         for (int i = kParamPot1; i <= kParamPot6; ++i)
             params[i] = 63;
 
-        for (int i = kParamFoot1; i <= kParamFoot3; ++i)
+        for (int i = kParamFoot1; i < kParamCount; ++i)
             params[i] = 0;
     }
 
@@ -117,6 +117,11 @@ protected:
             parameter.ranges.def = 0.0f;
             parameter.name = "Foot " + String(index - kParamFoot1 + 1);
             parameter.symbol = "foot" + String(index - kParamFoot1 + 1);
+            break;
+        case kParamExpPedal:
+            parameter.ranges.def = 0.0f;
+            parameter.name = "Exp.Pedal";
+            parameter.symbol = "exp_pedal";
             break;
         }
     }
@@ -288,6 +293,7 @@ protected:
                 switch (static_cast<Parameters>(i))
                 {
                 case kParamPot1 ... kParamPot6:
+                case kParamExpPedal:
                     outEvent.data[1] = 20 + i;
                     break;
                 case kParamFoot1 ... kParamFoot3:

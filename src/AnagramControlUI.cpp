@@ -30,7 +30,7 @@ public:
         for (int i = kParamPot1; i <= kParamPot6; ++i)
             params[i] = 63;
 
-        for (int i = kParamFoot1; i <= kParamFoot3; ++i)
+        for (int i = kParamFoot1; i < kParamCount; ++i)
             params[i] = 0;
 
         // set minimum size constraint
@@ -77,7 +77,7 @@ protected:
         {
             String name;
 
-            ImGui::SeparatorText("Banks");
+            ImGui::SeparatorText("Bank Preloading");
             if (ImGui::Button("Previous##bank"))
                 setState("bank", "-");
             ImGui::SameLine();
@@ -158,6 +158,19 @@ protected:
 
                 if (ImGui::IsItemDeactivated())
                     editParameter(i, false);
+            }
+
+            {
+                if (ImGui::SliderInt("Exp.Pedal", params + kParamExpPedal, 0, 127))
+                {
+                    if (ImGui::IsItemActivated())
+                        editParameter(kParamExpPedal, true);
+
+                    setParameterValue(kParamExpPedal, params[kParamExpPedal]);
+                }
+
+                if (ImGui::IsItemDeactivated())
+                    editParameter(kParamExpPedal, false);
             }
         }
         ImGui::End();

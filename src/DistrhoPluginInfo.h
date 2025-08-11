@@ -155,7 +155,7 @@
 
    When this macro is defined, the companion DISTRHO_UI_DEFAULT_WIDTH macro must be defined as well.
  */
-#define DISTRHO_UI_DEFAULT_HEIGHT 480
+#define DISTRHO_UI_DEFAULT_HEIGHT 500
 
 /**
    Whether the %UI uses NanoVG for drawing instead of the default raw OpenGL calls.@n
@@ -355,6 +355,8 @@ enum Parameters {
    // Foots
    kParamFoot1,
    kParamFoot3 = kParamFoot1 + 2,
+   // Other
+   kParamExpPedal,
    // Total
    kParamCount
 };
