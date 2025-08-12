@@ -186,7 +186,7 @@ protected:
                     if (ImGui::IsItemActivated())
                         editParameter(i, true);
 
-                    setParameterValue(i, params[i]);
+                    setParameterValue(i, params[i] ? 127 : 0);
                 }
 
                 if (ImGui::IsItemDeactivated())
