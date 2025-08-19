@@ -23,7 +23,7 @@ enum Actions {
 
 class AnagramControlPlugin : public Plugin
 {
-    int params[kParamCount];
+    int params[kParamCount] = {};
     bool updatedParams[kParamCount] = {};
 
     int8_t actions[kActionCount] = {};
@@ -39,9 +39,6 @@ public:
     {
         for (int i = kParamPot1; i <= kParamPot6; ++i)
             params[i] = 63;
-
-        for (int i = kParamFoot1; i < kParamCount; ++i)
-            params[i] = 0;
     }
 
 protected:
@@ -122,6 +119,11 @@ protected:
             parameter.ranges.def = 0.0f;
             parameter.name = "Exp.Pedal";
             parameter.symbol = "exp_pedal";
+            break;
+        case kParamCCs ... kParamCount - 1:
+            parameter.ranges.def = 0.0f;
+            parameter.name = "CC " + String(kAllowedCCs[index - kParamCCs]);
+            parameter.symbol = "cc" + String(kAllowedCCs[index - kParamCCs]);
             break;
         }
     }
@@ -230,7 +232,6 @@ protected:
             if (! updatedActions[i])
                 continue;
 
-            updatedActions[i] = false;
             outEvent.size = 3;
             outEvent.data[0] = 0xB0;
 
@@ -302,7 +303,10 @@ protected:
                 continue;
             }
 
-            writeMidiEvent(outEvent);
+            if (! writeMidiEvent(outEvent))
+                break;
+
+            updatedActions[i] = false;
         }
 
         // bindings
@@ -311,28 +315,33 @@ protected:
 
         for (int i = 0; i < kParamCount; ++i)
         {
-            if (updatedParams[i])
+            if (! updatedParams[i])
+                continue;
+
+            outEvent.data[2] = params[i];
+
+            switch (static_cast<Parameters>(i))
             {
-                updatedParams[i] = false;
-                outEvent.data[2] = params[i];
-
-                switch (static_cast<Parameters>(i))
-                {
-                case kParamPot1 ... kParamPot6:
-                    outEvent.data[1] = 20 + i;
-                    break;
-                case kParamFoot1 ... kParamFoot3:
-                    outEvent.data[1] = 17 + i - kParamFoot1;
-                    break;
-                case kParamExpPedal:
-                    outEvent.data[1] = 89;
-                default:
-                    continue;
-                }
-
-                if (! writeMidiEvent(outEvent))
-                    break;
+            case kParamPot1 ... kParamPot6:
+                outEvent.data[1] = 20 + i;
+                break;
+            case kParamFoot1 ... kParamFoot3:
+                outEvent.data[1] = 17 + i - kParamFoot1;
+                break;
+            case kParamExpPedal:
+                outEvent.data[1] = 89;
+                break;
+            case kParamCCs ... kParamCount - 1:
+                outEvent.data[1] = kAllowedCCs[i - kParamCCs];
+                break;
+            default:
+                continue;
             }
+
+            if (! writeMidiEvent(outEvent))
+                break;
+
+            updatedParams[i] = false;
         }
     }
 

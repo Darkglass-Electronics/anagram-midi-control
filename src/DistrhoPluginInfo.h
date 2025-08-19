@@ -4,6 +4,8 @@
  * SPDX-License-Identifier: ISC
  */
 
+#include <cstdint>
+
 /**
    The plugin name.@n
    This is used to identify your plugin before a Plugin instance can be created.
@@ -144,7 +146,7 @@
 
    When this macro is defined, the companion DISTRHO_UI_DEFAULT_HEIGHT macro must be defined as well.
  */
-#define DISTRHO_UI_DEFAULT_WIDTH 320
+#define DISTRHO_UI_DEFAULT_WIDTH 640
 
 /**
    Default UI height to use when creating initial and temporary windows.@n
@@ -169,7 +171,7 @@
    Enabling this options makes it possible for the user to resize the plugin UI at anytime.
    @see UI::setGeometryConstraints(uint, uint, bool, bool)
  */
-#define DISTRHO_UI_USER_RESIZABLE 0
+#define DISTRHO_UI_USER_RESIZABLE 1
 
 /**
    The %UI URI when exporting in LV2 format.@n
@@ -348,6 +350,22 @@
 */
 #define DISTRHO_PLUGIN_CLAP_ID "com.darkglass.anagram-midi-control"
 
+static constexpr const uint8_t kAllowedCCs[] = {
+    // 0 => Area select (Bank select MSB)
+    1, 2, 3, 4, 5, 6,
+    // 7 => Master volume (Volume MSB)
+    8, 9, 10, 11, 12, 13,
+    // 14-32 => Footswitches, Stomp bindings, Bindings, Sub-area select (Bank select LSB)
+    33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58,
+    59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84,
+    // 85-87 => Mode, Tuner, Tap tempo
+    88,
+    // 89 => Expression pedal alias
+    90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101,
+    // 102-119 => Bank, Preset, Scene: select/inc/dec, Looper
+    120, 121, 122, 123, 124, 125, 126, 127,
+};
+
 enum Parameters {
    // Pots
    kParamPot1,
@@ -357,6 +375,7 @@ enum Parameters {
    kParamFoot3 = kParamFoot1 + 2,
    // Other
    kParamExpPedal,
+   kParamCCs,
    // Total
-   kParamCount
+   kParamCount = kParamCCs + std::size(kAllowedCCs),
 };

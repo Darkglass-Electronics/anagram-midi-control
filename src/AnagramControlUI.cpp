@@ -50,9 +50,6 @@ public:
         for (int i = kParamPot1; i <= kParamPot6; ++i)
             params[i] = 63;
 
-        for (int i = kParamFoot1; i < kParamCount; ++i)
-            params[i] = 0;
-
         // set minimum size constraint
         const double scaleFactor = getScaleFactor();
         setGeometryConstraints(DISTRHO_UI_DEFAULT_WIDTH * scaleFactor, DISTRHO_UI_DEFAULT_HEIGHT * scaleFactor, false);
@@ -87,13 +84,15 @@ protected:
     void onImGuiDisplay() override
     {
         const double scaleFactor = getScaleFactor();
+        const uint width1 = 330 * scaleFactor;
+        const uint width2 = getWidth() - width1;
+        const uint height = getHeight();
+        String name;
+
         ImGui::SetNextWindowPos(ImVec2(0, 0));
-        ImGui::SetNextWindowSize(ImVec2(getWidth(), getHeight()));
-
-        if (ImGui::Begin("Anagram MIDI Control", nullptr, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoDecoration))
+        ImGui::SetNextWindowSize(ImVec2(width1, height));
+        if (ImGui::Begin("Hardcoded", nullptr, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoDecoration))
         {
-            String name;
-
             ImGui::SeparatorText("Bank Preloading");
             ImGui::SetNextItemWidth(64 * scaleFactor);
             ImGui::Combo("##bank", &bank, kBankNames, ARRAY_SIZE(kBankNames));
@@ -163,7 +162,7 @@ protected:
 
             for (int i = kParamPot1; i <= kParamPot6; ++i)
             {
-                name = "Pot " + String(i + 1);
+                name = "Pot " + String(i + 1) + " (CC " + String(20 + i) + ")";
 
                 if (ImGui::SliderInt(name, params + i, 0, 127))
                 {
@@ -179,7 +178,7 @@ protected:
 
             for (int i = kParamFoot1; i <= kParamFoot3; ++i)
             {
-                name = "Foot " + String(i - kParamFoot1 + 1);
+                name = "Foot " + String(i - kParamFoot1 + 1) + " (CC " + String(17 + i - kParamFoot1) + ")";
 
                 if (ImGui::SliderInt(name, params + i, 0, 1))
                 {
@@ -194,7 +193,7 @@ protected:
             }
 
             {
-                if (ImGui::SliderInt("Exp.Pedal", params + kParamExpPedal, 0, 127))
+                if (ImGui::SliderInt("Exp.Pedal (CC 89)", params + kParamExpPedal, 0, 127))
                 {
                     if (ImGui::IsItemActivated())
                         editParameter(kParamExpPedal, true);
@@ -204,6 +203,30 @@ protected:
 
                 if (ImGui::IsItemDeactivated())
                     editParameter(kParamExpPedal, false);
+            }
+        }
+        ImGui::End();
+
+        ImGui::SetNextWindowPos(ImVec2(width1, 0));
+        ImGui::SetNextWindowSize(ImVec2(width2, height));
+        if (ImGui::Begin("Flexible", nullptr, ImGuiWindowFlags_AlwaysVerticalScrollbar | ImGuiWindowFlags_NoDecoration))
+        {
+            ImGui::SeparatorText("Generic CCs");
+
+            for (uint8_t i = 0; i < std::size(kAllowedCCs); ++i)
+            {
+                name = "CC " + String(kAllowedCCs[i]);
+
+                if (ImGui::SliderInt(name, params + (kParamCCs + i), 0, 127))
+                {
+                    if (ImGui::IsItemActivated())
+                        editParameter(kParamCCs + i, true);
+
+                    setParameterValue(kParamCCs + i, params[kParamCCs + i]);
+                }
+
+                if (ImGui::IsItemDeactivated())
+                    editParameter(kParamCCs + i, false);
             }
         }
         ImGui::End();
