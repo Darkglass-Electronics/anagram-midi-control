@@ -319,12 +319,13 @@ protected:
                 switch (static_cast<Parameters>(i))
                 {
                 case kParamPot1 ... kParamPot6:
-                case kParamExpPedal:
                     outEvent.data[1] = 20 + i;
                     break;
                 case kParamFoot1 ... kParamFoot3:
                     outEvent.data[1] = 17 + i - kParamFoot1;
                     break;
+                case kParamExpPedal:
+                    outEvent.data[1] = 89;
                 default:
                     continue;
                 }
