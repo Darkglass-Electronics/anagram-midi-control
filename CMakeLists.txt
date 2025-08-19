@@ -14,6 +14,8 @@ set(CMAKE_C_VISIBILITY_PRESET hidden)
 set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 set(CMAKE_VISIBILITY_INLINES_HIDDEN TRUE)
 
+find_package(Threads REQUIRED)
+
 # import dpf
 add_subdirectory(DPF)
 
@@ -56,6 +58,11 @@ target_include_directories(anagram-midi-control
   PUBLIC
     DPF-Widgets/opengl
     src
+)
+
+target_link_libraries(anagram-midi-control
+  PUBLIC
+    ${CMAKE_THREAD_LIBS_INIT}
 )
 
 # ---------------------------------------------------------------------------------------------------------------------
