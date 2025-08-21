@@ -34,7 +34,6 @@ add_compile_definitions(
 
   # no input needed for wasm builds
   PUGL_WASM_NO_KEYBOARD_INPUT
-  PUGL_WASM_NO_MOUSEWHEEL_INPUT
 )
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
