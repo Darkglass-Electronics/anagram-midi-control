@@ -158,7 +158,7 @@ protected:
    /**
       Change an internal state @a key to @a value.
     */
-    void setState(const char* key, const char* value)
+    void setState(const char* key, const char* value) override
     {
         /**/ if (std::strcmp(key, "bank") == 0)
         {

@@ -31,13 +31,29 @@ add_compile_definitions(
   IMGUI_DISABLE_DEBUG_TOOLS
   IMGUI_DISABLE_DEFAULT_SHELL_FUNCTIONS
   IMGUI_DISABLE_DEMO_WINDOWS
+
+  # no input needed for wasm builds
+  PUGL_WASM_NO_KEYBOARD_INPUT
+  PUGL_WASM_NO_MOUSEWHEEL_INPUT
 )
+
+if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
+  set(EMSCRIPTEN TRUE)
+  set(TARGETS jack)
+  set(UI_TYPE gles2)
+  add_link_options(-sSTACK_SIZE=4mb)
+else()
+  set(EMSCRIPTEN FALSE)
+  set(TARGETS au clap jack lv2 vst2)
+  set(UI_TYPE opengl)
+endif()
 
 # ---------------------------------------------------------------------------------------------------------------------
 # anagram-midi-control target
 
 dpf_add_plugin(anagram-midi-control
-  TARGETS au clap jack lv2 vst2
+  TARGETS ${TARGETS}
+  UI_TYPE ${UI_TYPE}
   FILES_DSP
       src/AnagramControlPlugin.cpp
   FILES_UI
