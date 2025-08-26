@@ -91,7 +91,7 @@ protected:
 
         ImGui::SetNextWindowPos(ImVec2(0, 0));
         ImGui::SetNextWindowSize(ImVec2(width1, height));
-        if (ImGui::Begin("Hardcoded", nullptr, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoDecoration))
+        if (ImGui::Begin("Reserved CCs", nullptr, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoDecoration))
         {
             ImGui::SeparatorText("Bank Preloading");
             ImGui::SetNextItemWidth(64 * scaleFactor);
@@ -209,7 +209,7 @@ protected:
 
         ImGui::SetNextWindowPos(ImVec2(width1, 0));
         ImGui::SetNextWindowSize(ImVec2(width2, height));
-        if (ImGui::Begin("Flexible", nullptr, ImGuiWindowFlags_AlwaysVerticalScrollbar | ImGuiWindowFlags_NoDecoration))
+        if (ImGui::Begin("Generic CCs", nullptr, ImGuiWindowFlags_AlwaysVerticalScrollbar | ImGuiWindowFlags_NoDecoration))
         {
             ImGui::SeparatorText("Generic CCs");
 

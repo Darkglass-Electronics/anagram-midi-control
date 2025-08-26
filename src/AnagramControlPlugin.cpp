@@ -246,11 +246,11 @@ protected:
                     break;
                 case '+':
                     outEvent.data[1] = 103;
-                    outEvent.data[2] = 0;
+                    outEvent.data[2] = 1;
                     break;
                 case '-':
                     outEvent.data[1] = 104;
-                    outEvent.data[2] = 0;
+                    outEvent.data[2] = 1;
                     break;
                 }
                 break;
@@ -264,28 +264,32 @@ protected:
                     break;
                 case '+':
                     outEvent.data[1] = 105;
-                    outEvent.data[2] = 0;
+                    outEvent.data[2] = 1;
                     break;
                 case '-':
                     outEvent.data[1] = 106;
-                    outEvent.data[2] = 0;
+                    outEvent.data[2] = 1;
                     break;
                 }
                 break;
             case kActionScene:
                 switch (actions[i])
                 {
-                case '0' ... '3':
+                case '0':
                     outEvent.data[1] = 107;
-                    outEvent.data[2] = std::clamp<uint8_t>(actions[i] - '0', 0, 3);
+                    outEvent.data[2] = 127;
+                    break;
+                case '1' ... '3':
+                    outEvent.data[1] = 107;
+                    outEvent.data[2] = std::clamp<uint8_t>(actions[i] - '0', 1, 3);
                     break;
                 case '+':
                     outEvent.data[1] = 108;
-                    outEvent.data[2] = 0;
+                    outEvent.data[2] = 1;
                     break;
                 case '-':
                     outEvent.data[1] = 109;
-                    outEvent.data[2] = 0;
+                    outEvent.data[2] = 1;
                     break;
                 default:
                     continue;
@@ -293,11 +297,11 @@ protected:
                 break;
             case kActionMode:
                 outEvent.data[1] = 85;
-                outEvent.data[2] = std::clamp<uint8_t>(actions[i] - '1', 0, 2);
+                outEvent.data[2] = std::clamp<uint8_t>(actions[i] - '0', 1, 3);
                 break;
             case kActionTuner:
                 outEvent.data[1] = 86;
-                outEvent.data[2] = 0;
+                outEvent.data[2] = 1;
                 break;
             default:
                 continue;
