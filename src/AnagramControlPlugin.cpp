@@ -1,6 +1,6 @@
 /*
  * Anagram MIDI Control
- * Copyright (C) 2025 Filipe Coelho <falktx@darkglass.com>
+ * Copyright (C) 2025-2026 Filipe Coelho <falktx@darkglass.com>
  * SPDX-License-Identifier: ISC
  */
 
@@ -190,7 +190,16 @@ protected:
         }
         else if (std::strcmp(key, "scene") == 0)
         {
-            actions[kActionScene] = value[0];
+            switch (value[0])
+            {
+            case '-':
+            case '+':
+                actions[kActionScene] = value[0];
+                break;
+            default:
+                actions[kActionScene] = std::atoi(value);
+                break;
+            }
             updatedActions[kActionScene] = true;
         }
         else if (std::strcmp(key, "mode") == 0)
@@ -275,13 +284,9 @@ protected:
             case kActionScene:
                 switch (actions[i])
                 {
-                case '0':
+                default:
                     outEvent.data[1] = 107;
-                    outEvent.data[2] = 127;
-                    break;
-                case '1' ... '3':
-                    outEvent.data[1] = 107;
-                    outEvent.data[2] = std::clamp<uint8_t>(actions[i] - '0', 1, 3);
+                    outEvent.data[2] = actions[i];
                     break;
                 case '+':
                     outEvent.data[1] = 108;
@@ -291,8 +296,6 @@ protected:
                     outEvent.data[1] = 109;
                     outEvent.data[2] = 1;
                     break;
-                default:
-                    continue;
                 }
                 break;
             case kActionMode:

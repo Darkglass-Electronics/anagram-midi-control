@@ -1,6 +1,6 @@
 /*
  * Anagram MIDI Control
- * Copyright (C) 2025 Filipe Coelho <falktx@darkglass.com>
+ * Copyright (C) 2025-2026 Filipe Coelho <falktx@darkglass.com>
  * SPDX-License-Identifier: ISC
  */
 
@@ -21,7 +21,7 @@ class AnagramControlUI : public UI
         "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42",
     };
     static_assert(ARRAY_SIZE(kBankNames) == 42, "wrong number of banks");
-    static constexpr const char* const kPresetNames[] = {
+    static constexpr const char* const kPresetSceneNames[] = {
         "  1", "  2", "  3", "  4", "  5", "  6", "  7", "  8", "  9", " 10", " 11", " 12", " 13", " 14",
         " 15", " 16", " 17", " 18", " 19", " 20", " 21", " 22", " 23", " 24", " 25", " 26", " 27", " 28",
         " 29", " 30", " 31", " 32", " 33", " 34", " 35", " 36", " 37", " 38", " 39", " 40", " 41", " 42",
@@ -32,10 +32,11 @@ class AnagramControlUI : public UI
         " 99", "100", "101", "102", "103", "104", "105", "106", "107", "108", "109", "110", "111", "112",
         "113", "114", "115", "116", "117", "118", "119", "120", "121", "122", "123", "124", "125", "126",
     };
-    static_assert(ARRAY_SIZE(kPresetNames) == 126, "wrong number of presets");
+    static_assert(ARRAY_SIZE(kPresetSceneNames) == 126, "wrong number of presets / scenes");
     int params[kParamCount] = {};
     int bank = 0;
     int preset = 0;
+    int scene = 0;
 
     // ----------------------------------------------------------------------------------------------------------------
 
@@ -110,7 +111,7 @@ protected:
 
             ImGui::SeparatorText("Presets");
             ImGui::SetNextItemWidth(64 * scaleFactor);
-            ImGui::Combo("##preset", &preset, kPresetNames, ARRAY_SIZE(kPresetNames));
+            ImGui::Combo("##preset", &preset, kPresetSceneNames, ARRAY_SIZE(kPresetSceneNames));
             ImGui::SameLine();
             if (ImGui::Button("Go##preset"))
                 setState("preset", String(preset + 1));
@@ -124,17 +125,18 @@ protected:
                 setState("preset", "+");
 
             ImGui::SeparatorText("Scenes (only works in scene mode)");
+            ImGui::SetNextItemWidth(64 * scaleFactor);
+            ImGui::Combo("##scene", &scene, kPresetSceneNames, ARRAY_SIZE(kPresetSceneNames));
+            ImGui::SameLine();
+            if (ImGui::Button("Go##scene"))
+                setState("scene", String(scene + 1));
+            ImGui::SameLine();
+            ImGui::SeparatorEx(ImGuiSeparatorFlags_Vertical);
+            ImGui::SameLine();
             if (ImGui::Button("Default##scene"))
-                setState("scene", "0");
+                setState("scene", "127");
             ImGui::SameLine();
-            if (ImGui::Button("A##scene"))
-                setState("scene", "1");
-            ImGui::SameLine();
-            if (ImGui::Button("B##scene"))
-                setState("scene", "2");
-            ImGui::SameLine();
-            if (ImGui::Button("C##scene"))
-                setState("scene", "3");
+            ImGui::SeparatorEx(ImGuiSeparatorFlags_Vertical);
             ImGui::SameLine();
             if (ImGui::Button("Previous##scene"))
                 setState("scene", "-");
