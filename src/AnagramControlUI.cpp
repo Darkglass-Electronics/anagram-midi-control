@@ -37,6 +37,7 @@ class AnagramControlUI : public UI
     int bank = 0;
     int preset = 0;
     int scene = 0;
+    int looperSlot = 0;
 
     // ----------------------------------------------------------------------------------------------------------------
 
@@ -85,7 +86,7 @@ protected:
     void onImGuiDisplay() override
     {
         const double scaleFactor = getScaleFactor();
-        const uint width1 = 330 * scaleFactor;
+        const uint width1 = 350 * scaleFactor;
         const uint width2 = getWidth() - width1;
         const uint height = getHeight();
         String name;
@@ -154,7 +155,41 @@ protected:
             if (ImGui::Button("Scene##mode"))
                 setState("mode", "3");
 
-            ImGui::SeparatorText("Tools");
+            ImGui::SeparatorText("Looper");
+            if (ImGui::Button("Enter/Exit##looper"))
+                setState("looper", "e");
+            ImGui::SameLine();
+            if (ImGui::Button("Play/Stop##looper"))
+                setState("looper", "p");
+            ImGui::SameLine();
+            if (ImGui::Button("Rec/Dub##looper"))
+                setState("looper", "r");
+            ImGui::SameLine();
+            if (ImGui::Button("Clear##looper"))
+                setState("looper", "c");
+            ImGui::SameLine();
+            if (ImGui::Button("Undo##looper"))
+                setState("looper", "u");
+            ImGui::SameLine();
+            if (ImGui::Button("Redo##looper"))
+                setState("looper", "U");
+
+            ImGui::SeparatorText("Looper Slot");
+            ImGui::SetNextItemWidth(64 * scaleFactor);
+            ImGui::Combo("##looperslot", &looperSlot, kPresetSceneNames, ARRAY_SIZE(kPresetSceneNames));
+            ImGui::SameLine();
+            if (ImGui::Button("Go##looperslot"))
+                setState("looper", String(looperSlot + 1));
+            ImGui::SameLine();
+            ImGui::SeparatorEx(ImGuiSeparatorFlags_Vertical);
+            ImGui::SameLine();
+            if (ImGui::Button("Previous##looper"))
+                setState("looper", "-");
+            ImGui::SameLine();
+            if (ImGui::Button("Next##looper"))
+                setState("looper", "+");
+
+            ImGui::SeparatorText("Other Tools");
             if (ImGui::Button("Tuner##tools"))
             {
                 setState("tuner", "");

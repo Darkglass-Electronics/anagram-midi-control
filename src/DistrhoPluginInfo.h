@@ -17,13 +17,21 @@
    Number of audio inputs the plugin has.
    @note This macro is required.
  */
-#define DISTRHO_PLUGIN_NUM_INPUTS 2
+#define DISTRHO_PLUGIN_NUM_INPUTS 0
 
 /**
    Number of audio outputs the plugin has.
    @note This macro is required.
  */
+#define DISTRHO_PLUGIN_NUM_OUTPUTS 0
+
+// FIXME required for now
+#ifdef __EMSCRIPTEN__
+#undef DISTRHO_PLUGIN_NUM_INPUTS
+#undef DISTRHO_PLUGIN_NUM_OUTPUTS
+#define DISTRHO_PLUGIN_NUM_INPUTS 2
 #define DISTRHO_PLUGIN_NUM_OUTPUTS 2
+#endif
 
 /**
    The plugin URI when exporting in LV2 format.
@@ -146,7 +154,7 @@
 
    When this macro is defined, the companion DISTRHO_UI_DEFAULT_HEIGHT macro must be defined as well.
  */
-#define DISTRHO_UI_DEFAULT_WIDTH 640
+#define DISTRHO_UI_DEFAULT_WIDTH 660
 
 /**
    Default UI height to use when creating initial and temporary windows.@n
@@ -157,7 +165,7 @@
 
    When this macro is defined, the companion DISTRHO_UI_DEFAULT_WIDTH macro must be defined as well.
  */
-#define DISTRHO_UI_DEFAULT_HEIGHT 500
+#define DISTRHO_UI_DEFAULT_HEIGHT 590
 
 /**
    Whether the %UI uses NanoVG for drawing instead of the default raw OpenGL calls.@n

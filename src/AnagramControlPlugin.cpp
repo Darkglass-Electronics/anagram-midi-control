@@ -17,6 +17,7 @@ enum Actions {
     kActionPreset,
     kActionScene,
     kActionMode,
+    kActionLooper,
     kActionTuner,
     kActionCount
 };
@@ -207,6 +208,26 @@ protected:
             actions[kActionMode] = value[0];
             updatedActions[kActionMode] = true;
         }
+        else if (std::strcmp(key, "looper") == 0)
+        {
+            switch (value[0])
+            {
+            case 'e':
+            case 'p':
+            case 'r':
+            case 'c':
+            case 'u':
+            case 'U':
+            case '-':
+            case '+':
+                actions[kActionLooper] = value[0];
+                break;
+            default:
+                actions[kActionLooper] = std::atoi(value);
+                break;
+            }
+            updatedActions[kActionLooper] = true;
+        }
         else if (std::strcmp(key, "tuner") == 0)
         {
             updatedActions[kActionTuner] = true;
@@ -301,6 +322,47 @@ protected:
             case kActionMode:
                 outEvent.data[1] = 85;
                 outEvent.data[2] = std::clamp<uint8_t>(actions[i] - '0', 1, 3);
+                break;
+            case kActionLooper:
+                switch (actions[i])
+                {
+                case 'e':
+                    outEvent.data[1] = 110;
+                    outEvent.data[2] = 1;
+                    break;
+                case 'p':
+                    outEvent.data[1] = 111;
+                    outEvent.data[2] = 1;
+                    break;
+                case 'r':
+                    outEvent.data[1] = 112;
+                    outEvent.data[2] = 1;
+                    break;
+                case 'c':
+                    outEvent.data[1] = 113;
+                    outEvent.data[2] = 1;
+                    break;
+                case 'u':
+                    outEvent.data[1] = 114;
+                    outEvent.data[2] = 1;
+                    break;
+                case 'U':
+                    outEvent.data[1] = 115;
+                    outEvent.data[2] = 1;
+                    break;
+                case '+':
+                    outEvent.data[1] = 117;
+                    outEvent.data[2] = 1;
+                    break;
+                case '-':
+                    outEvent.data[1] = 118;
+                    outEvent.data[2] = 1;
+                    break;
+                default:
+                    outEvent.data[1] = 116;
+                    outEvent.data[2] = actions[i];
+                    break;
+                }
                 break;
             case kActionTuner:
                 outEvent.data[1] = 86;
